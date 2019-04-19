@@ -108,10 +108,6 @@ class MarkerLayer extends StatelessWidget {
           var pixelPosY =
               (pos.y - (markerOpt.height - markerOpt.anchor.top)).toDouble();
 
-          if (!map.bounds.contains(markerOpt.point)) {
-            continue;
-          }
-
           markers.add(
             new Positioned(
               width: markerOpt.width,
