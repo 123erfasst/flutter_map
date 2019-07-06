@@ -103,7 +103,7 @@ class MapState {
     zoom = _fitZoomToBounds(zoom);
     final mapMoved = center != _lastCenter || zoom != _zoom;
 
-    if (!mapMoved || options.isOutOfBounds(center) || !bounds.isValid) {
+    if (!mapMoved || options.isOutOfBounds(center)) {
       return;
     }
 
