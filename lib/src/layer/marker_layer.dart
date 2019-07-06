@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/src/core/bounds.dart';
 import 'package:flutter_map/src/map/map.dart';
 import 'package:latlong/latlong.dart';
 
@@ -17,7 +18,7 @@ class Anchor {
 
   Anchor._(double width, double height, AnchorAlign alignOpt)
       : left = _leftOffset(width, alignOpt),
-        top = _topOffset(width, alignOpt);
+        top = _topOffset(height, alignOpt);
 
   static double _leftOffset(double width, AnchorAlign alignOpt) {
     switch (alignOpt) {
@@ -47,7 +48,7 @@ class Anchor {
     }
   }
 
-  factory Anchor._forPos(AnchorPos pos, double width, double height) {
+  factory Anchor.forPos(AnchorPos pos, double width, double height) {
     if (pos == null) return Anchor._(width, height, null);
     if (pos.value is AnchorAlign) return Anchor._(width, height, pos.value);
     if (pos.value is Anchor) return pos.value;
@@ -83,7 +84,7 @@ class Marker {
     this.width = 30.0,
     this.height = 30.0,
     AnchorPos anchorPos,
-  }) : this.anchor = Anchor._forPos(anchorPos, width, height);
+  }) : anchor = Anchor.forPos(anchorPos, width, height);
 }
 
 class MarkerLayer extends StatelessWidget {
@@ -93,12 +94,24 @@ class MarkerLayer extends StatelessWidget {
 
   MarkerLayer(this.markerOpts, this.map, this.stream);
 
+  bool _boundsContainsMarker(Marker marker) {
+    var pixelPoint = map.project(marker.point);
+
+    final width = marker.width - marker.anchor.left;
+    final height = marker.height - marker.anchor.top;
+
+    var sw = CustomPoint(pixelPoint.x + width, pixelPoint.y - height);
+    var ne = CustomPoint(pixelPoint.x - width, pixelPoint.y + height);
+    return map.pixelBounds.containsPartialBounds(Bounds(sw, ne));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return new StreamBuilder<int>(
+    return StreamBuilder<int>(
       stream: stream, // a Stream<int> or null
       builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
         var markers = <Widget>[];
-        for (var markerOpt in this.markerOpts.markers) {
+        for (var markerOpt in markerOpts.markers) {
           var pos = map.project(markerOpt.point);
           pos = pos.multiplyBy(map.getZoomScale(map.zoom, map.zoom)) -
               map.getPixelOrigin();
@@ -109,7 +122,7 @@ class MarkerLayer extends StatelessWidget {
               (pos.y - (markerOpt.height - markerOpt.anchor.top)).toDouble();
 
           markers.add(
-            new Positioned(
+            Positioned(
               width: markerOpt.width,
               height: markerOpt.height,
               left: pixelPosX,
@@ -118,8 +131,8 @@ class MarkerLayer extends StatelessWidget {
             ),
           );
         }
-        return new Container(
-          child: new Stack(
+        return Container(
+          child: Stack(
             children: markers,
           ),
         );
