@@ -34,11 +34,14 @@ class OverlayImage {
 Future<ui.Image> _loadImage(img.ImageProvider imageProvider) async {
   var stream = imageProvider.resolve(img.ImageConfiguration.empty);
   var completer = Completer<ui.Image>();
-  void listener(img.ImageInfo frame, bool synchronousCall) {
+ 
+  ImageStreamListener listener;
+
+  listener = ImageStreamListener((img.ImageInfo frame, bool synchronousCall) {
     var image = frame.image;
     completer.complete(image);
     stream.removeListener(listener);
-  }
+  });
 
   stream.addListener(listener);
   return completer.future;
