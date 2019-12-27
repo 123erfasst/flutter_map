@@ -12,6 +12,7 @@ import './pages/offline_mbtiles_map.dart';
 import './pages/on_tap.dart';
 import './pages/overlay_image.dart';
 import './pages/plugin_api.dart';
+import './pages/plugin_scalebar.dart';
 import './pages/polyline.dart';
 import './pages/tap_to_add.dart';
 
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
             AnimatedMapControllerPage(),
         MarkerAnchorPage.route: (context) => MarkerAnchorPage(),
         PluginPage.route: (context) => PluginPage(),
+        PluginScaleBar.route: (context) => PluginScaleBar(),
         OfflineMapPage.route: (context) => OfflineMapPage(),
         OfflineMBTilesMapPage.route: (context) => OfflineMBTilesMapPage(),
         OnTapPage.route: (context) => OnTapPage(),
@@ -51,18 +53,18 @@ class MyApp extends StatelessWidget {
 // http://mcg.mbitson.com/
 // https://github.com/mbitson/mcg
 const int _bluePrimary = 0xFF395afa;
-const MaterialColor mapBoxBlue = const MaterialColor(
+const MaterialColor mapBoxBlue = MaterialColor(
   _bluePrimary,
-  const <int, Color>{
-    50: const Color(0xFFE7EBFE),
-    100: const Color(0xFFC4CEFE),
-    200: const Color(0xFF9CADFD),
-    300: const Color(0xFF748CFC),
-    400: const Color(0xFF5773FB),
-    500: const Color(_bluePrimary),
-    600: const Color(0xFF3352F9),
-    700: const Color(0xFF2C48F9),
-    800: const Color(0xFF243FF8),
-    900: const Color(0xFF172EF6),
+  <int, Color>{
+    50: Color(0xFFE7EBFE),
+    100: Color(0xFFC4CEFE),
+    200: Color(0xFF9CADFD),
+    300: Color(0xFF748CFC),
+    400: Color(0xFF5773FB),
+    500: Color(_bluePrimary),
+    600: Color(0xFF3352F9),
+    700: Color(0xFF2C48F9),
+    800: Color(0xFF243FF8),
+    900: Color(0xFF172EF6),
   },
 );
