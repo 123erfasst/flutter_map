@@ -177,6 +177,40 @@ class Epsg3857 extends CrsWithStaticTransformation {
   }
 }
 
+/// EPSG:3857 Without repeating map
+@immutable
+class Epsg3857NoWrap extends CrsWithStaticTransformation {
+  static const double _scale = 0.5 / (math.pi * SphericalMercator.r);
+
+  /// Create a new [Epsg3857NoWrap] object.
+  const Epsg3857NoWrap()
+      : super._(
+          code: 'EPSG:3857',
+          transformation: const _Transformation(_scale, 0.5, -_scale, 0.5),
+          projection: const SphericalMercator(),
+          infinite: false,
+          wrapLng: null,
+        );
+
+  @override
+  (double, double) latLngToXY(LatLng latlng, double scale) =>
+      _transformation.transform(
+        SphericalMercator.projectLng(latlng.longitude),
+        SphericalMercator.projectLat(latlng.latitude),
+        scale,
+      );
+
+  @override
+  Point<double> latLngToPoint(LatLng latlng, double zoom) {
+    final (x, y) = _transformation.transform(
+      SphericalMercator.projectLng(latlng.longitude),
+      SphericalMercator.projectLat(latlng.latitude),
+      scale(zoom),
+    );
+    return Point<double>(x, y);
+  }
+}
+
 /// EPSG:4326, A common CRS among GIS enthusiasts.
 /// Uses simple Equirectangular projection.
 @immutable
